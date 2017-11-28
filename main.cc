@@ -2,26 +2,38 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <cassert>
 
 using namespace std;
 
+template <typename T>
 class Stack {
 	public :
-		long pop();
-		void insert(long x);
+		T pop();
+		void insert(T x);
+		T top() const;
 
 	private :
-		vector<long> st;
+		vector<T> st;
 };
 
-long Stack::pop() {
-	long ret = st[st.size()-1];
+template <typename T>
+T Stack<T>::pop() {
+	assert(st.size() > 0);
+	T ret = st[st.size()-1];
 	st.pop_back();
 	return ret;
 }
 
-void Stack::insert(long x) {
+template <typename T>
+void Stack<T>::insert(T x) {
 	st.push_back(x);
+}
+
+template <typename T>
+T Stack<T>::top() const {
+	assert(st.size() > 0);
+	return st.at(st.size()-1);
 }
 
 class Calculator {
@@ -30,11 +42,11 @@ class Calculator {
 		void insert(pair<long, char> e);
 
 	private :
-		vector<pair<long, char>> postfix;
+		vector<pair<long, char> > postfix;
 };
 
 long Calculator::calculate() {
-	Stack stack;
+	Stack<long> stack;
 	long res = 0;
 	for (auto ele : postfix) {
 		if (ele.second == '0') {
@@ -92,15 +104,22 @@ int main() {
 	     << "Currently supported operations are : +, -, *, /, %\n"
 	     << "Enter the expression you want to calculate : ";
 	cin >> expr;
+	expr.push_back(')');
 
-
+	Stack<char> stack;
 	Calculator calc;
+	
+	stack.insert('(');
+	
 	for (int i = 0; i < expr.length(); ++i) {
 		char c = expr.length();
 		if (c == '(') {
-			
+			stack.insert('(');
 		} else if (c == ')') {
-			
+			char ele;
+			while ((ele = stack.pop()) != '(') {
+				calc.insert(make_pair(0, ele));
+			}
 		} else if (c >= '0' && c <= '9') {
 			long num = c-'0';
 			++i;
@@ -111,7 +130,15 @@ int main() {
 			--i;
 			calc.insert(make_pair(num, '0'));
 		} else /*Must be a operator*/ {
-			
+			int curr_prec = precedence(c);
+			char ele = stack.top();
+			int prec = precedence(ele);
+			while (ele != '(' && prec >= curr_prec) {
+				calc.insert(make_pair(0, ele));
+				ele = stack.pop();
+				prec = precedence(ele);
+			}
+			stack.insert(c);
 		}
 	}
 	cout << calc.calculate() << endl;
