@@ -54,19 +54,19 @@ long Calculator::calculate() {
 			long n1 = stack.pop(), n2 = stack.pop(), res;
 			switch (ele.second) {
 				case '+' :
-					res = n1+n2;
+					res = n2+n1;
 					break;
 				case '-' :
-					res = n1-n2;
+					res = n2-n1;
 					break;
 				case '*' :
-					res = n1*n2;
+					res = n2*n1;
 					break;
 				case '/' :
-					res = n1/n2;
+					res = n2/n1;
 					break;
 				case '%' :
-					res = n1%n2;
+					res = n2%n1;
 					break;
 				default :
 					break;
@@ -103,7 +103,7 @@ int main() {
 	cout << "----Welcome to expression calculator-----\n"
 	     << "Currently supported operations are : +, -, *, /, %\n"
 	     << "Enter the expression you want to calculate : ";
-	cin >> expr;
+	getline(cin, expr);
 	expr.push_back(')');
 
 	Stack<char> stack;
@@ -112,7 +112,7 @@ int main() {
 	stack.insert('(');
 	
 	for (int i = 0; i < expr.length(); ++i) {
-		char c = expr[i];
+		char c = expr[i];	
 		if (c == ' ') {
 			continue;
 		} else if (c == '(') {
