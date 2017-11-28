@@ -42,39 +42,39 @@ class Calculator {
 		void insert(pair<long, char> e);
 
 	private :
-		vector<pair<long, char> > postfix;
+		vector<pair<long, char>> postfix;
 };
 
 long Calculator::calculate() {
-	Stack<long> stack;
-	long res = 0;
+	Stack<long> stack;	
 	for (auto ele : postfix) {
 		if (ele.second == '0') {
 			stack.insert(ele.first);
 		} else {
-			long n1 = stack.pop(), n2 = stack.pop();
+			long n1 = stack.pop(), n2 = stack.pop(), res;
 			switch (ele.second) {
 				case '+' :
-					res += n1+n2;
+					res = n1+n2;
 					break;
 				case '-' :
-					res += n2-n1;
+					res = n1-n2;
 					break;
 				case '*' :
-					res += n2*n1;
+					res = n1*n2;
 					break;
 				case '/' :
-					res += n2/n1;
+					res = n1/n2;
 					break;
 				case '%' :
-					res += n2%n1;
+					res = n1%n2;
 					break;
 				default :
 					break;
 			}
+			stack.insert(res);
 		}
 	}
-	return res; 
+	return stack.top(); 
 };
 
 void Calculator::insert(pair<long, char> e) {
@@ -112,8 +112,10 @@ int main() {
 	stack.insert('(');
 	
 	for (int i = 0; i < expr.length(); ++i) {
-		char c = expr.length();
-		if (c == '(') {
+		char c = expr[i];
+		if (c == ' ') {
+			continue;
+		} else if (c == '(') {
 			stack.insert('(');
 		} else if (c == ')') {
 			char ele;
@@ -129,13 +131,13 @@ int main() {
 			}
 			--i;
 			calc.insert(make_pair(num, '0'));
-		} else /*Must be a operator*/ {
+		} else /*Must be a operator*/{
 			int curr_prec = precedence(c);
 			char ele = stack.top();
 			int prec = precedence(ele);
 			while (ele != '(' && prec >= curr_prec) {
-				calc.insert(make_pair(0, ele));
-				ele = stack.pop();
+				calc.insert(make_pair(0, stack.pop()));
+				ele = stack.top();
 				prec = precedence(ele);
 			}
 			stack.insert(c);
