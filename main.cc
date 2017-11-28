@@ -27,6 +27,7 @@ void Stack::insert(long x) {
 class Calculator {
 	public :
 		long calculate();
+		void insert(pair<long, char> e);
 
 	private :
 		vector<pair<long, char>> postfix;
@@ -63,6 +64,10 @@ long Calculator::calculate() {
 	}
 	return res; 
 };
+
+void Calculator::insert(pair<long, char> e) {
+	postfix.push_back(e);
+}
 
 int precedence(char op) {
 	switch (op) {
@@ -104,7 +109,7 @@ int main() {
 				++i;
 			}
 			--i;
-			calc.
+			calc.insert(make_pair(num, '0'));
 		} else /*Must be a operator*/ {
 			
 		}
