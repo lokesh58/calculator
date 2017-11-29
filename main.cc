@@ -143,7 +143,7 @@ int main() {
 			stack.insert(c);
 		}
 	}
-	cout << calc.calculate() << endl;
+	cout << "Result is: " << calc.calculate() << endl;
 	
 	return 0;
 }
